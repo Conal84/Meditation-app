@@ -12,7 +12,6 @@ const app = () => {
   const timeSelect = document.querySelectorAll('.time-select button');
   // Track Outline
   const outlineLength = outline.getTotalLength();
-  let outlineColor = outline.getAttribute('stroke');
   // Duration
   let duration = 600;
 
