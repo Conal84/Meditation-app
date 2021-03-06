@@ -10,19 +10,21 @@ const app = () => {
   const timeDisplay = document.querySelector('.time-display');
   // Time select buttons
   const timeSelect = document.querySelectorAll('.time-select button');
-  // Length of outline
+  // Track Outline
   const outlineLength = outline.getTotalLength();
+  let outlineColor = outline.getAttribute('stroke');
   // Duration
-  let fakeDuration = 600;
+  let duration = 600;
 
   outline.style.strokeDasharray = outlineLength;
   outline.style.strokeDashoffset = outlineLength;
 
-  // Pick different sounds
+  // Pick different sounds and videos
   sounds.forEach((sound) => {
     sound.addEventListener('click', function () {
       song.src = this.getAttribute('data-sound');
       video.src = this.getAttribute('data-video');
+      outline.setAttribute('stroke', this.getAttribute('data-color'));
       checkPlaying(song);
     });
   });
@@ -35,13 +37,15 @@ const app = () => {
   // Select time
   timeSelect.forEach((time) => {
     time.addEventListener('click', function () {
-      fakeDuration = this.getAttribute('data-time');
-      timeDisplay.innerHTML = `${Math.floor(fakeDuration / 60)}:${Math.floor(
-        fakeDuration % 60
+      duration = this.getAttribute('data-time');
+      timeDisplay.innerHTML = `${Math.floor(duration / 60)}:0${Math.floor(
+        duration % 60
       )}`;
+      resetPlayer();
     });
   });
 
+  // Start / pause the player
   const checkPlaying = (song) => {
     if (song.paused) {
       song.play();
@@ -54,24 +58,30 @@ const app = () => {
     }
   };
 
+  // Reset player to initial state
+  const resetPlayer = () => {
+    song.pause();
+    video.pause();
+    song.currentTime = 0;
+    play.src = './svg/play.svg';
+  };
+
   // Animate the circle
   song.ontimeupdate = () => {
     let currentTime = song.currentTime;
-    let elapsed = fakeDuration - currentTime;
+    let elapsed = duration - currentTime;
     let seconds = Math.floor(elapsed % 60);
     let minutes = Math.floor(elapsed / 60);
 
-    let progress = outlineLength - (currentTime / fakeDuration) * outlineLength;
+    let progress = outlineLength - (currentTime / duration) * outlineLength;
     outline.style.strokeDashoffset = progress;
 
     // Animate the text countdown
-    timeDisplay.innerHTML = `${minutes}:${seconds}`;
+    const display = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    timeDisplay.innerHTML = display;
 
-    if (currentTime >= fakeDuration) {
-      song.pause();
-      song.currentTime = 0;
-      play.src = './svg/play.svg';
-      video.pause();
+    if (currentTime >= duration) {
+      resetPlayer();
     }
   };
 };

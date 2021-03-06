@@ -81,11 +81,11 @@ video {
 }
 
 .sound-select button:nth-child(1) {
-  background: #4972a1;
+  background: #6495ed;
 }
 
 .sound-select button:nth-child(2) {
-  background: #a14f49;
+  background: #ff781f;
 }
 
 .sound-select button img {
